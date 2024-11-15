@@ -32,6 +32,6 @@ def word_cloud(all_data : list):
     plt.figure(figsize=(20, 20))
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis('off')
-    plt.savefig('wordcloud.png')
+    plt.savefig('../image/wordcloud.png')
     
     print("워드클라우드가 저장되었습니다.")

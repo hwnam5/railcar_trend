@@ -25,5 +25,5 @@ def top10(all_data : list):
     ax.set(xlabel='Overall', ylabel='Keyword')
     
     #plt.show()
-    plt.savefig('top10.png')
+    plt.savefig('../image/top10.png')
     print("Top 10 키워드가 저장되었습니다.")
