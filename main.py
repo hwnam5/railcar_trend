@@ -1,11 +1,11 @@
-from news import get_news
-from keywords import get_keywords
-from MongoDB import get_db
-from make_list import make_list
-from schema import get_all_data, update_db
+from news.news import get_news
+from news.keywords import get_keywords
+from database.MongoDB import get_db
+from database.make_list import make_list
+from database.schema import get_all_data, update_db
 from datetime import datetime
-from Top10 import top10
-from make_wordcloud import word_cloud
+from visualization.Top10 import top10
+from visualization.make_wordcloud import word_cloud
 
 
 def main():
