@@ -35,8 +35,15 @@ import re
 import re
 import networkx as nx
 
-#plt.rcParams['font.family'] = 'NanumGothic'
-#plt.rcParams['axes.unicode_minus'] = False
+# NanumGothic 폰트 설정
+font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+if os.path.exists(font_path):
+    font_name = fm.FontProperties(fname=font_path).get_name()
+    plt.rc('font', family=font_name)
+else:
+    print(f"Font file not found: {font_path}")
+
+plt.rcParams['axes.unicode_minus'] = False
 
 def cocurrence_network(start_date, end_date, all_data):
     data_for_date = []
@@ -60,14 +67,26 @@ def cocurrence_network(start_date, end_date, all_data):
     d = dict(nx.degree(G))
     edges = G.edges()
     weights = [G[u][v]['weight']/10 for u,v in edges]
+    
+    # 노드 가중치 합 계산
+    node_weights = {
+        node: sum(data['weight'] for _, _, data in G.edges(node, data=True))
+        for node in G.nodes()
+    }
+
+    # 노드 크기 설정 (가중치 합에 비례)
+    node_size = [weight * 100 for weight in node_weights.values()]
 
     nx.draw(G, pos_kkl, 
             with_labels=True, 
-            node_size=[v * 100 for v in d.values()],
+            #node_size=[v * 50 for v in d.values()],
+            node_size=node_size,
             nodelist=d.keys(),  
             width=weights, 
             edge_color='grey', #node_color=list(df_skills_stats['core_number']), cmap="coolwarm_r", 
             alpha=0.9,
+            font_family='NanumGothic',
+            font_size=9,
         )
 
     # Set title

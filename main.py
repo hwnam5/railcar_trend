@@ -49,7 +49,7 @@ def main():
                 keyword2list = make_list(keywords)
         
                 update_db(keyword2list, date, all_data_list, collection)
-                update_network_db(keywords, date, all_pairs_list, collection1)
+                update_network_db(keyword2list, date, all_pairs_list, collection1)
                 
         elif select == '2':
             top10(all_data_list)
