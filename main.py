@@ -37,7 +37,7 @@ def main():
             start_num = input("가져올 뉴스의 시작 위치를 입력하세요: ")
             sort = input("정렬 기준을 입력하세요(sim, date): ")
     
-            news_list = get_news(int(display_num), int(start_num), sort)
+            news_list, query = get_news(int(display_num), int(start_num), sort)
             for news in news_list:
                 discription = news['description']
                 pub_date = news['pubDate']
@@ -48,8 +48,8 @@ def main():
                 #print(type(keywords))
                 keyword2list = make_list(keywords)
         
-                update_db(keyword2list, date, all_data_list, collection)
-                update_network_db(keyword2list, date, all_pairs_list, collection1)
+                update_db(keyword2list, date, all_data_list, collection, query)
+                update_network_db(keyword2list, date, all_pairs_list, collection1, query)
                 
         elif select == '2':
             top10(all_data_list)

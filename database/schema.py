@@ -11,8 +11,10 @@ def get_all_data(all_data) -> List[dict]:
         all_data_list.append(a_data)
     return all_data_list
 
-def update_db(new_keywords : list, date : str, all_data : list, collection):
+def update_db(new_keywords : list, date : str, all_data : list, collection, query):
     for keyword in new_keywords:
+        if keyword == query:
+            continue
         found = False
         for data in all_data:
             if data['date'] == date and data['keyword'] == keyword:

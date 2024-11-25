@@ -55,6 +55,9 @@ def cocurrence_network(start_date, end_date, all_data):
     df = df[['word1', 'word2', 'num']]
     df['num'] = df['num'].astype(int)
     
+    #상위 10개만 추출
+    df = df.sort_values(by='num', ascending=False).head(15)
+    
     G = nx.Graph()
     
     for _, row in df.iterrows():
@@ -66,16 +69,23 @@ def cocurrence_network(start_date, end_date, all_data):
 
     d = dict(nx.degree(G))
     edges = G.edges()
-    weights = [G[u][v]['weight']/10 for u,v in edges]
+    weights = [G[u][v]['weight'] for u,v in edges]
+    max_weight = max(weights)
+    min_weight = min(weights)
+    weights = [(weight - min_weight + 1) / (max_weight - min_weight)
+               for weight in weights]
     
     # 노드 가중치 합 계산
     node_weights = {
         node: sum(data['weight'] for _, _, data in G.edges(node, data=True))
         for node in G.nodes()
     }
-
+    max_weight = max(node_weights.values())
+    min_weight = min(node_weights.values())
+    node_color = [(weight - min_weight ) / (max_weight - min_weight)
+                  for weight in node_weights.values()]   
     # 노드 크기 설정 (가중치 합에 비례)
-    node_size = [weight * 100 for weight in node_weights.values()]
+    node_size = [weight * 1000 for weight in node_weights.values()]
 
     nx.draw(G, pos_kkl, 
             with_labels=True, 
@@ -84,6 +94,8 @@ def cocurrence_network(start_date, end_date, all_data):
             nodelist=d.keys(),  
             width=weights, 
             edge_color='grey', #node_color=list(df_skills_stats['core_number']), cmap="coolwarm_r", 
+            node_color=node_color,
+            cmap="viridis",
             alpha=0.9,
             font_family='NanumGothic',
             font_size=9,
@@ -97,6 +109,7 @@ def cocurrence_network(start_date, end_date, all_data):
                 'verticalalignment': 'baseline',
                 'horizontalalignment': 'center'}, 
                 loc='center')
+    plt.colorbar(plt.cm.ScalarMappable(cmap="viridis"), ax=ax, label='Node weight')
     # Set edge color
     plt.gca().collections[0].set_edgecolor("#000000")
     plt.savefig('./image/cocurrence.png')

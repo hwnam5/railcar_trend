@@ -30,16 +30,22 @@ def word_cloud(all_data : list):
     for word in wc:
         wc[word] = wc[word] / max_num
     
+    # 상위20개만 추출
+    wc = dict(sorted(wc.items(), key=lambda x: x[1], reverse=True)[:30])
+    
+    # 
+    
+    
     stopwords = set(STOPWORDS)
     stopwords.add('한국철도공사')
     
-    text = ' '.join([f"{word} " * int(freq * 10) for word, freq in wc.items()])
+    #text = ' '.join([f"{word} " * int(freq * 10) for word, freq in wc.items()])
     wordcloud = WordCloud(background_color= 'white',
                           #font_path='NanumGothic.ttf',
                           font_path = font_path,
                           max_words=200,
                           stopwords=stopwords,
-                          ).generate(text)
+                          ).generate_from_frequencies(wc)
     #wordcloud.generate_from_frequencies(wc)
     
     plt.figure(figsize=(20, 20))

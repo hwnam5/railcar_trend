@@ -13,9 +13,12 @@ def get_all_network(all_data) -> List[dict]:
     return all_network_list
     
 
-def update_network_db(new_keywords : list, date : str, all_data : list, collection):
+def update_network_db(new_keywords : list, date : str, all_data : list, collection, query):
     #for words in new_keywords:
     words_ = list(set(new_keywords))
+    if query in words_:
+        words_.remove(query)
+        
     for i in range(len(words_) - 1):
         for j in range(i + 1, len(words_)):
             found = False
