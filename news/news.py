@@ -28,7 +28,7 @@ def get_news(display_num : int, statrt_num : int, sort : str) -> List[dict]:
     news = response.json()
     news_list = []
     
-    print(news)
+    #print(news)
     for item in news['items']:
         a_news = {
             'title': item['title'],

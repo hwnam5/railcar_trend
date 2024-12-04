@@ -8,6 +8,7 @@ from datetime import datetime
 from visualization.Top10 import top10
 from visualization.make_wordcloud import word_cloud
 from visualization.cocurrence import cocurrence_network
+from llama_FineTuning.data_2_csv import append_discription_csv, append_topk_csv, append_cocurrence_csv
 
 
 def main():
@@ -21,6 +22,8 @@ def main():
     all_data1 = collection1.find()
     all_data1 = list(all_data1)
     all_pairs_list = get_all_network(all_data1)
+    
+    #append_cocurrence_csv(all_pairs_list)
     
     select = 0
     while select != '5':
@@ -43,6 +46,7 @@ def main():
                 pub_date = news['pubDate']
                 date_obj = datetime.strptime(pub_date, "%a, %d %b %Y %H:%M:%S %z")
                 date = date_obj.strftime("%Y-%m-%d")
+                date_korean = date_obj.strftime("%Y년 %m월 %d일")
                 keywords = get_keywords(discription)
                 print(keywords)
                 #print(type(keywords))
@@ -50,9 +54,11 @@ def main():
         
                 update_db(keyword2list, date, all_data_list, collection, query)
                 update_network_db(keyword2list, date, all_pairs_list, collection1, query)
+                append_discription_csv(discription, date_korean, keyword2list)
                 
         elif select == '2':
             top10(all_data_list)
+            append_topk_csv(all_data_list)
             #print("top10이 저장되었습니다.")   
              
         elif select == '3':
@@ -67,6 +73,7 @@ def main():
             #print("word cloud가 저장되었습니다.")
             
         elif select == '5':
+            append_cocurrence_csv(all_pairs_list)
             print("종료합니다.")
             break
         else:
