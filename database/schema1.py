@@ -18,7 +18,8 @@ def update_network_db(new_keywords : list, date : str, all_data : list, collecti
     words_ = list(set(new_keywords))
     if query in words_:
         words_.remove(query)
-        
+    
+    word_table = {}
     for i in range(len(words_) - 1):
         for j in range(i + 1, len(words_)):
             found = False
