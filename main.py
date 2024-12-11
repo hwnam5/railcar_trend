@@ -8,6 +8,7 @@ from datetime import datetime
 from visualization.Top10 import top10
 from visualization.make_wordcloud import word_cloud
 from visualization.cocurrence import cocurrence_network
+from visualization.word_transition import word_transition_check
 from llama_FineTuning.data_2_csv import append_discription_csv, append_topk_csv, append_cocurrence_csv
 
 
@@ -32,7 +33,8 @@ def main():
         print("2. 많이 언급된 키워드 top10 보기")
         print("3. 키워드 관계도 분석하기")
         print("4. 워드클라우드로 시각화하기")
-        print("5. 종료")
+        print("5. 시간 흐름에 따른 keyword 분석")
+        print("6. 종료")
         select = input("선택: ")
         
         if select == '1':  
@@ -54,11 +56,15 @@ def main():
         
                 update_db(keyword2list, date, all_data_list, collection, query)
                 update_network_db(keyword2list, date, all_pairs_list, collection1, query)
+            ask_data = input("데이터 수집을 원하십니까?")
+            if ask_data == "Yes":
                 append_discription_csv(discription, date_korean, keyword2list)
+                append_topk_csv(all_data_list)
+                append_cocurrence_csv(all_pairs_list)
                 
         elif select == '2':
             top10(all_data_list)
-            append_topk_csv(all_data_list)
+            #append_topk_csv(all_data_list)
             #print("top10이 저장되었습니다.")   
              
         elif select == '3':
@@ -73,7 +79,11 @@ def main():
             #print("word cloud가 저장되었습니다.")
             
         elif select == '5':
-            append_cocurrence_csv(all_pairs_list)
+            num = input("비교하고 싶은 단어의 개수 (1~3) : ")
+            words = input("추이를 확인하고 싶은 단어를 입력하세요 : ").split()
+            word_transition_check(words, num, all_data_list)
+            
+        elif select == '6':
             print("종료합니다.")
             break
         else:
