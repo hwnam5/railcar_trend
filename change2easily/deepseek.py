@@ -1,26 +1,45 @@
 import requests
+import json
+import pandas as pd
+import time
 
 # OpenRouter API 키로 교체하세요
-API_KEY = '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'
+API_KEY = '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'
 API_URL = 'https://openrouter.ai/api/v1/chat/completions'
-
+MAX_RETRY = 5
 # API 요청을 위한 헤더 정의
 headers = {
     'Authorization': f'Bearer {API_KEY}',
     'Content-Type': 'application/json'
 }
+df = pd.read_excel('data1.xlsx')
+new_df = []
+for i in range(len(df)):
+    content = df['content'][i]
+    page = df['page'][i]
+    data = {
+        "model": "deepseek/deepseek-chat:free",
+        "messages": [{"role": "user", "content": f"이 글을 어린아이가 이해하기 아주 쉽게 풀어서 적어주세요? (문장구조와 형식은 유지해주세요. 결과물만 출력해주세요. 격식있는 존댓말을 사용해주세요.) {content}"}]
+    }
+    retry_count = 0
+    while retry_count < MAX_RETRY:
+        
+            response = requests.post(API_URL, json=data, headers=headers)
+            result = response.json()
+            print(result)
+            new_content = result['choices'][0]['message']['content'].strip()
 
-# 요청 페이로드(데이터) 정의
-data = {
-    "model": "deepseek/deepseek-chat:free",
-    "messages": [{"role": "user", "content": "삶의 의미는 무엇인지 어린아이가 이해하기 쉽게 설명해주세요?"}]
-}
+            if new_content:
+                new_df.append({'page': page, 'content': new_content})
+                print(f"[{i}] 처리 완료")
+                
+                break
+            else:
+                retry_count += 1
+                print(f"[{i}] 빈 응답, 재시도 {retry_count}/{MAX_RETRY}")
+                time.sleep(1.5)
 
-# 딥시크 API에 POST 요청을 보냅니다
-response = requests.post(API_URL, json=data, headers=headers)
+    print(new_df[i])
 
-# 요청이 성공했는지 확인
-if response.status_code == 200:
-    print("API 응답:", response.json())
-else:
-    print("API에서 데이터를 가져오지 못했습니다. 상태 코드:", response.status_code)
+new_df = pd.DataFrame(new_df)
+new_df.to_excel('change_data1.xlsx', index=False)
